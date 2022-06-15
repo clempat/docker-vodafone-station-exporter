@@ -7,7 +7,12 @@ FROM golang:1.18-alpine as builder
 ADD . /go/vodafone-station-exporter
 WORKDIR /go/vodafone-station-exporter
 # -ldflags="-s -w" for Shrinking Go executables, https://itnext.io/shrinking-go-executable-9e9c17b47a41
-RUN go build -ldflags="-s -w"
+RUN --mount=type=cache,id=gomod,target=/go/pkg/mod \
+    --mount=type=cache,id=gobuild,target=/root/.cache/go-build \
+    go mod download
+RUN --mount=type=cache,id=gomod,target=/go/pkg/mod \
+    --mount=type=cache,id=gobuild,target=/root/.cache/go-build \
+    go build -ldflags="-s -w"
 
 FROM alpine:3.16
 WORKDIR /app
