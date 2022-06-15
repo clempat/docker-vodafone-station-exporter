@@ -351,6 +351,7 @@ jobs:
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
         shell: bash
+    
       - name: Generate hash of matrix.platform-args AND matrix.build-args
         shell: bash
         env:
@@ -536,7 +537,11 @@ jobs:
 #            type=sha,prefix={{branch}}-
 #            type=sha,enable=${{format('{0}', matrix.tag-args-enable) != 'false'}},prefix=${{ matrix.tag-args }}-{{branch}}-
 
-
+      - name: Cut "docker-" form github.repository and convert to lowercase # use with ${{ steps.cut.outputs.repo }}
+        id: cut
+        run: echo "::set-output name=repo::$(echo "${{ github.repository }}" | tr '[A-Z]' '[a-z]' | sed -e 's/\/docker-/\//')"
+        shell: bash
+          #
       - name: meta6 docker/metadata-action
         uses: docker/metadata-action@v4.0.1
         # continue-on-error: true
@@ -544,8 +549,8 @@ jobs:
         id: meta
         with:
           images: |
-            name=ghcr.io/${{ github.repository }}
-            name=${{ github.repository }}
+            name=ghcr.io/${{ steps.cut.outputs.repo }}
+            name=${{ steps.cut.outputs.repo }}
           #flavor: |
           #  latest=${{ matrix.tag-latest }}
           #  ${{ matrix.tag-args }}
