@@ -9,7 +9,7 @@ WORKDIR /go/vodafone-station-exporter
 # -ldflags="-s -w" for Shrinking Go executables, https://itnext.io/shrinking-go-executable-9e9c17b47a41
 RUN go build -ldflags="-s -w"
 
-FROM alpine:latest
+FROM alpine:3.16
 WORKDIR /app
 COPY --from=builder /go/vodafone-station-exporter/vodafone-station-exporter .
 CMD /app/vodafone-station-exporter -vodafone.station-password=$VF_STATION_PASS -vodafone.station-url=$VF_STATION_URL
