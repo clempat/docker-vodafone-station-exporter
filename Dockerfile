@@ -16,6 +16,8 @@ RUN --mount=type=cache,id=gomod,target=/go/pkg/mod \
 
 FROM alpine:3.16
 WORKDIR /app
+#RUN apk --no-cache add file ldd
+RUN apk add file ldd
 COPY --from=builder /go/vodafone-station-exporter/vodafone-station-exporter .
 CMD /app/vodafone-station-exporter -vodafone.station-password=$VF_STATION_PASS -vodafone.station-url=$VF_STATION_URL
 EXPOSE 9420
