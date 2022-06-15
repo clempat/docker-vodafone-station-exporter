@@ -138,7 +138,8 @@ jobs:
 #            #release: ${{ github.event_name != 'pull_request' }} # importent to catch a rogue like PR
 #            release: true
 #            experimental: true
-          - platform-args: "linux/amd64,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x"
+          - platform-args: "linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x"
+          #- platform-args: "linux/amd64,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x"
           #- platform-args: "linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64"
           #- platform-args: "linux/amd64"
             host-os: ubuntu-20.04
