@@ -27,16 +27,24 @@ RUN apk add file #
 # -ldflags="-s -w" for Shrinking Go executables, https://itnext.io/shrinking-go-executable-9e9c17b47a41
 RUN --mount=type=cache,id=gomod,sharing=locked,mode=0775,target=/go/pkg/mod \
     --mount=type=cache,id=gobuild,sharing=locked,mode=0775,target=/root/.cache/go-build \
+    set -x && \
     go env GOCACHE && \
     du -hd0 $(go env GOCACHE) && \
+    go env GOMODCACHE && \
+    du -hd0 $(go env GOMODCACHE) && \
     go mod download && \
-    du -hd0 $(go env GOCACHE)
+    du -hd0 $(go env GOCACHE) && \
+    du -hd0 $(go env GOMODCACHE)
 RUN --mount=type=cache,id=gomod,sharing=locked,mode=0775,target=/go/pkg/mod \
     --mount=type=cache,id=gobuild,sharing=locked,mode=0775,target=/root/.cache/go-build \
+    set -x && \
     go env GOCACHE && \
     du -hd0 $(go env GOCACHE) && \
+    go env GOMODCACHE && \
+    du -hd0 $(go env GOMODCACHE) && \
     GODEBUG=gocachehash=1 go build -v -ldflags="-s -w" && \
-    du -hd0 $(go env GOCACHE)
+    du -hd0 $(go env GOCACHE) && \
+    du -hd0 $(go env GOMODCACHE)
    # go build -ldflags="-s -w"
 
 FROM alpine:3.16
