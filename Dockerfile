@@ -16,37 +16,72 @@
 # echo loglevel=debug >> .ENV-PW ; echo station_password=XXXX >> .ENV-PW ;
 # docker buildx build . -t vodafone-station-exporter-dev:latest && docker run --rm -it -p 9420:942--env-file .ENV-PW vodafone-station-exporter-dev:latest
 # docker buildx build . -t vodafone-station-exporter-dev:test && docker run --rm -it -p 9420:9420 vodafone-station-exporter-dev:test
+# docker buildx build --progress plain . -t vodafone-station-exporter-dev:test && docker run --rm -it --env-file .ENV-PW --env DEBUG=foo -p 9420:9420 vodafone-station-exporter-dev:test
+
+
+# https://github.com/tonistiigi/xx
+FROM --platform=$BUILDPLATFORM tonistiigi/xx AS xx
 
 #FROM golang:1.18-alpine as builder
-FROM golang:1.18-alpine as builder
+FROM --platform=$BUILDPLATFORM golang:1.18-alpine as builder
+# copy xx scripts to your build stage
+COPY --from=xx / /
+ARG BUILDPLATFORM TARGETOS TARGETARCH TARGETPLATFORM
+#ARG TARGETARCH
+#ARG TARGETPLATFORM
+#ARG BUILDPLATFORM
+# you can now call xx-* commands
+RUN xx-info env
+RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM"
+# --platform=$BUILDPLATFORM see https://www.docker.com/blog/faster-multi-platform-builds-dockerfile-cross-compilation-guide/
 ADD . /go/vodafone-station-exporter
 WORKDIR /go/vodafone-station-exporter
 
 RUN apk add file #
 
+
+# Building Go can be achieved with the xx-go wrapper that automatically sets up values for GOOS, GOARCH, GOARM etc. It also sets up pkg-config and C compiler if building with CGo. Note that by default, CGo is enabled in Go when compiling for native architecture and disabled when cross-compiling. This can easily produce unexpected results; therefore, you should always define either CGO_ENABLED=1 or CGO_ENABLED=0 depending on if you expect your compilation to use CGo or not. https://github.com/tonistiigi/xx
+#ENV CGO_ENABLED=1
+ENV CGO_ENABLED=0
+
+# see https://www.docker.com/blog/faster-multi-platform-builds-dockerfile-cross-compilation-guide/
+# RUN --mount=target=. \
+#    --mount=type=cache,target=/root/.cache/go-build \
+#    --mount=type=cache,target=/go/pkg \
+#    GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o /out/myapp .
+
 # -ldflags="-s -w" for Shrinking Go executables, https://itnext.io/shrinking-go-executable-9e9c17b47a41
+### RUN --mount=type=cache,id=gomod,sharing=locked,mode=0775,target=/go/pkg/mod \
+###     --mount=type=cache,id=gobuild,sharing=locked,mode=0775,target=/root/.cache/go-build \
+#RUN
 RUN --mount=type=cache,id=gomod,sharing=locked,mode=0775,target=/go/pkg/mod \
     --mount=type=cache,id=gobuild,sharing=locked,mode=0775,target=/root/.cache/go-build \
     set -x && \
+    go build -v "fmt" && \
     go env GOCACHE && \
     du -hd0 $(go env GOCACHE) && \
     go env GOMODCACHE && \
     du -hd0 $(go env GOMODCACHE) && \
-    go mod download && \
+    GOOS=$TARGETOS GOARCH=$TARGETARCH go mod download && \
     du -hd0 $(go env GOCACHE) && \
     du -hd0 $(go env GOMODCACHE)
-RUN --mount=type=cache,id=gomod,sharing=locked,mode=0775,target=/go/pkg/mod \
-    --mount=type=cache,id=gobuild,sharing=locked,mode=0775,target=/root/.cache/go-build \
-    set -x && \
+### RUN --mount=type=cache,id=gomod,sharing=locked,mode=0775,target=/go/pkg/mod \
+###     --mount=type=cache,id=gobuild,sharing=locked,mode=0775,target=/root/.cache/go-build \
+RUN    set -x && \
+    go build -v "fmt" && \
     go env GOCACHE && \
     du -hd0 $(go env GOCACHE) && \
     go env GOMODCACHE && \
     du -hd0 $(go env GOMODCACHE) && \
-    go build -v -ldflags="-s -w" && \
+    GOOS=$TARGETOS GOARCH=$TARGETARCH go build -v -ldflags="-extldflags=-static -s -w" && \
     du -hd0 $(go env GOCACHE) && \
     du -hd0 $(go env GOMODCACHE)
+
+RUN    XX_DEBUG_VERIFY=foo xx-verify vodafone-station-exporter
 ## # GODEBUG=gocachehash=1 go build -v -ldflags="-s -w" && \
 ## # go build -ldflags="-s -w"
+## # GODEBUG=gocachehash=1 go build -v "fmt"
+## # xx-verify --static vodafone-station-exporter
 
 FROM alpine:3.16
 WORKDIR /app
@@ -68,8 +103,10 @@ ENV logLevel=${logLevel:-debug} \
 
 COPY --chmod=755 vodafone-station-exporter-entrypoint.sh /entrypoint.sh
 #ENTRYPOINT ["/app/vodafone-station-exporter-entrypoint.sh"]
+
+EXPOSE 9420
+USER        nobody
 ENTRYPOINT ["/entrypoint.sh"]
 #CMD /app/vodafone-station-exporter-entrypoint.sh
 
 
-EXPOSE 9420
