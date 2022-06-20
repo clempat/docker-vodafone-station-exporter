@@ -12,9 +12,22 @@ import (
 	"reflect"
 )
 
-const version = "0.2.3-dev"
+// var (
+//	version = "dev"
+//	commit  = ""
+//	date    = ""
+// )
+
+// const version = "0.2.3-dev"
 
 var (
+	// for version via ldflags / GOOS=$TARGETOS GOARCH=$TARGETARCH go build -v -ldflags="-extldflags=-static -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}"
+	// https://github.com/crazy-max/goreleaser-xx/blob/master/demo/echo-webapp/main.go
+	// 
+	version = "dev"
+	commit  = ""
+	date    = ""
+	//
 	showVersion             = flag.Bool("version", false, "Print version and exit")
 	showMetrics             = flag.Bool("show-metrics", false, "Show available metrics and exit")
 	listenAddress           = flag.String("web.listen-address", "[::]:9420", "Address to listen on")
