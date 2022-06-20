@@ -1,5 +1,7 @@
 # Vodafone Station Exporter
-Prometheus Exporter for the Vodafone Station (`CGA4233DE`)
+Prometheus Exporter for the Vodafone Station (`CGA4233DE`) and (`CGA6444VF`)
+
+Testet with CGA6444VF  Firmware: 19.3B57-1.0.41
 
 ## Usage
 ```
