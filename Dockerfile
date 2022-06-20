@@ -13,6 +13,7 @@
 # run it with: docker run --rm -d --restart unless-stopped -p 9420:9420 -e VF_STATION_PASS=<password> -e VF_STATION_URL=http://192.168.0.1 vodafone-station-exporter
 # or with: docker run --rm -it -p 9420:9420 --env-file .ENV-PW vodafone-station-exporter
 
+#FROM golang:1.18-alpine as builder
 FROM golang:1.18-alpine as builder
 ADD . /go/vodafone-station-exporter
 WORKDIR /go/vodafone-station-exporter
@@ -39,5 +40,14 @@ WORKDIR /app
 #RUN apk --no-cache add file ldd
 RUN apk add file scanelf elfutils patchelf
 COPY --from=builder /go/vodafone-station-exporter/vodafone-station-exporter .
-CMD /app/vodafone-station-exporter -vodafone.station-password=$VF_STATION_PASS -vodafone.station-url=$VF_STATION_URL
+#${variable:-word}
+ENV loglevel=${loglevel-info:-} \
+    station-password=${station-password:-} \
+    station-url=${station-url:-http://192.168.0.1} \
+    listen-address=${listen-address:-[::]:9420} \
+    telemetry-path=${telemetry-path:-/metrics}
+#ENV station-url=${station-url:-http://192.168.0.1}
+#ENV listen-address=${listen-address:-[::]:9420}
+#ENV telemetry-path=${telemetry-path:-/metrics}
+CMD /app/vodafone-station-exporter -log.level $loglevel -vodafone.station-password $station-password -vodafone.station-url $station-url -web.listen-address $listen-address -web.telemetry-path $telemetry-path
 EXPOSE 9420
