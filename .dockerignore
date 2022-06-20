@@ -1,5 +1,6 @@
 # https://engineering.vokal.io/Systems/docker.md.html
 .ENV-PW
+.ENV-PW*
 
 .drone.yml
 .git
