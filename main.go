@@ -12,7 +12,7 @@ import (
 	"reflect"
 )
 
-const version = "0.2.2dev"
+const version = "0.2.3-dev"
 
 var (
 	showVersion             = flag.Bool("version", false, "Print version and exit")
