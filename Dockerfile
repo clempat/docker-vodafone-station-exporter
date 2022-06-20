@@ -73,9 +73,10 @@ RUN    set -x && \
     du -hd0 $(go env GOCACHE) && \
     go env GOMODCACHE && \
     du -hd0 $(go env GOMODCACHE) && \
-    GOOS=$TARGETOS GOARCH=$TARGETARCH go build -v -ldflags="-extldflags=-static -s -w" && \
+    GOOS=$TARGETOS GOARCH=$TARGETARCH go build -v -ldflags="-extldflags=-static -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}" && \
     du -hd0 $(go env GOCACHE) && \
     du -hd0 $(go env GOMODCACHE)
+    #GOOS=$TARGETOS GOARCH=$TARGETARCH go build -v -ldflags="-extldflags=-static -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}" && \
 
 RUN    XX_DEBUG_VERIFY=foo xx-verify vodafone-station-exporter
 ## # GODEBUG=gocachehash=1 go build -v -ldflags="-s -w" && \
