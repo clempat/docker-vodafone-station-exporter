@@ -109,4 +109,3 @@ USER        nobody
 ENTRYPOINT ["/entrypoint.sh"]
 #CMD /app/vodafone-station-exporter-entrypoint.sh
 
-
