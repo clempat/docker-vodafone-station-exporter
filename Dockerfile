@@ -55,6 +55,12 @@ ENV logLevel=${logLevel:-debug} \
 #CMD ["/app/vodafone-station-exporter","-log.level=${loglevel}","-vodafone.station-password=${station_password}","-vodafone.station-url=${station_url}","-web.listen-address=${listen_address}","-web.telemetry-path=${telemetry_path}"]
 #CMD ["/app/vodafone-station-exporter"]
 #CMD /bin/sh -vx -c 'env && set && /app/vodafone-station-exporter -log.level=$logLevel -vodafone.station-password=$vodafoneStationPassword -vodafone.station-url=$vodafoneStationUrl -web.listen-address=$listenAddress -web.telemetry-path=$metricsPath '
-CMD /bin/sh -vx -c '/app/vodafone-station-exporter -log.level=$logLevel -vodafone.station-password=$vodafoneStationPassword -vodafone.station-url=$vodafoneStationUrl -web.listen-address=$listenAddress -web.telemetry-path=$metricsPath '
+#CMD /bin/sh -vx -c '/app/vodafone-station-exporter -log.level=$logLevel -vodafone.station-password=$vodafoneStationPassword -vodafone.station-url=$vodafoneStationUrl -web.listen-address=$listenAddress -web.telemetry-path=$metricsPath '
+
+COPY --chmod=755 vodafone-station-exporter-entrypoint.sh /entrypoint.sh
+#ENTRYPOINT ["/app/vodafone-station-exporter-entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
+#CMD /app/vodafone-station-exporter-entrypoint.sh
+
 
 EXPOSE 9420
