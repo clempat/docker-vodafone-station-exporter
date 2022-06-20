@@ -76,11 +76,14 @@ jobs:
         #host-os: [ubuntu-18.04, ubuntu-20.04, ubuntu-22.04, ubuntu-latest, windows-2016, windows-2019, windows-2022, macos-10.15, macos-11, macos-12]
         host-os: [ubuntu-20.04]
         release:
-          - false
+#          - false
+          - true
         tag-args:
-          - "null"
+#          - "null"
+          - "dev-"
         tag-latest: [FALSE]
-        tag-sha: [FALSE]
+#        tag-sha: [FALSE]
+        tag-sha: [TRUE]
         tag-args-enable: [FALSE]
         tag-args-disable: [TRUE]
         # tag-args-enable: 
