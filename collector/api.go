@@ -166,17 +166,6 @@ type StationStatusData struct {
 	IpPrefixClass   string     `json:"IpPrefixClass"`
 }
 
-//type WanStatusData struct {
-//	WanIPv4Address	 string     `json:"ipv4"`
-//	WanMac           string     `json:"mac_address"`
-//	WanIPv4Duration	 string     `json:"duration"`
-//	WanIPv6Duration  string     `json:"durationIpv6"`
-//	WanExpires       string     `json:"expires"`
-//	WanIPv4Dns       string     `json:"ipv4_dns"`
-//	WanIPv6Address  []string     `json:"IPAddress_v6"`
-//	DNSTblRT        []string   `json:"DNSTblRT"`
-//}
-
 type WanStatusData struct {
 	Ipv4	 string     `json:"ipv4"`
 	Mac           string     `json:"mac_address"`

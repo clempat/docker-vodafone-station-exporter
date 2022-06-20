@@ -70,15 +70,6 @@ var (
 	ipAddressRTDesc     *prometheus.Desc
 	ipPrefixClassDesc   *prometheus.Desc
 
-//	wanIPv4Desc         *prometheus.Desc
-//	wanMacDesc          *prometheus.Desc
-//	wanDurationDesc     *prometheus.Desc
-//	wanDurationIpv6Desc *prometheus.Desc
-//	wanExpiresDesc      *prometheus.Desc
-//	wanIPv4DnsDesc      *prometheus.Desc
-//	wanIPv6Desc         *prometheus.Desc
-//	wanDNSTblRTDesc     *prometheus.Desc
-
 	Ipv4Desc         *prometheus.Desc
 	MacDesc          *prometheus.Desc
 	DurationDesc     *prometheus.Desc
@@ -165,16 +156,6 @@ func init() {
 	ipAddressRTDesc = prometheus.NewDesc(prefix+"ip_address_rt_info", "IP address RT", []string{"ip"}, nil)
 	ipPrefixClassDesc = prometheus.NewDesc(prefix+"ip_prefix_class_info", "IP prefix class info", []string{"prefix_class"}, nil)
 
-//	// FIXME
-//	wanIPv4Desc = prometheus.NewDesc(prefix+"wan_ip4_info", "WAN IPv4 info", []string{"wan_ip4"}, nil)
-//	wanMacDesc = prometheus.NewDesc(prefix+"wan_mac_address_info", "WAN MAC address", []string{"mac_address"}, nil)
-//	wanDurationDesc = prometheus.NewDesc(prefix+"wan_duration", "WAN Duration in seconds", nil, nil)
-//	wanDurationIpv6Desc = prometheus.NewDesc(prefix+"wan_ip6_duration", "WAN IPv6 Duration in seconds", nil, nil)
-//        wanExpiresDesc = prometheus.NewDesc(prefix+"wan_expires", "WAN Expires in seconds", nil, nil)
-//        wanIPv4DnsDesc = prometheus.NewDesc(prefix+"wan_ipv4_dns", "WAN IPv4 DNS server", []string{"wan_ipv4_dns"}, nil)
-//        wanIPv6Desc = prometheus.NewDesc(prefix+"wan_ip6_info", "WAN IPv6 info", []string{"wan_ip6"}, nil)
-//        wanDNSTblRTDesc = prometheus.NewDesc(prefix+"wan_ipv6_dns", "WAN IPv6 DNS server", []string{"wan_ipv6_dns"}, nil)
-
 	Ipv4Desc = prometheus.NewDesc(prefix+"wan_ip4_info", "WAN IPv4 info", []string{"wan_ip4"}, nil)
 	MacDesc = prometheus.NewDesc(prefix+"wan_mac_address_info", "WAN MAC address", []string{"wan_mac_address"}, nil)
 	DurationDesc = prometheus.NewDesc(prefix+"wan_duration_seconds", "WAN Duration in seconds", nil, nil)
@@ -255,26 +236,6 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- delegatedPrefixDesc
 	ch <- ipAddressRTDesc
 	ch <- ipPrefixClassDesc
-
-//type WanStatusData struct {
-//	Ipv4	 string     `json:"ipv4"`
-//	Mac           string     `json:"mac_address"`
-//	Duration	 string     `json:"duration"`
-//	DurationIpv6  string     `json:"durationIpv6"`
-//	Expires       string     `json:"expires"`
-//	Ipv4Dns       string     `json:"ipv4_dns"`
-//	IPAddressV6  []string     `json:"IPAddress_v6"`
-//	DNSTblRT        []string   `json:"DNSTblRT"`
-//}
-
-//	ch <- wanIPv4Desc
-//	ch <- wanMacDesc
-//	ch <- wanDurationDesc
-//	ch <- wanDurationIpv6Desc
-//	ch <- wanExpiresDesc
-//	ch <- wanIPv4DnsDesc
-//	ch <- wanIPv6Desc
-//	ch <- wanDNSTblRTDesc
 
 	ch <- Ipv4Desc
 	ch <- MacDesc
@@ -401,69 +362,6 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.MustNewConstMetric(ipPrefixClassDesc, prometheus.GaugeValue, 1, stationStatusResponse.Data.IpPrefixClass)
 	}
 	
-//	ch <- wanIPv4Desc
-//	ch <- wanMacDesc
-//	ch <- wanDurationDesc
-//	ch <- wanDurationIpv6Desc
-//	ch <- wanExpiresDesc
-//	ch <- wanIPv4DnsDesc
-//	ch <- wanIPv6Desc
-//	ch <- wanDNSTblRTDesc
-//type WanStatusData struct {
-//	WanIPv4Address	         string     `json:"ipv4"`
-//	WanMac           string     `json:"mac_address"`
-//	WanIPv4Duration	 string     `json:"duration"`
-//	WanIPv6Duration  string     `json:"durationIpv6"`
-//	WanExpires       string     `json:"expires"`
-//	WanIPv4Dns       string     `json:"ipv4_dns"`
-//	WanIPv6Address   string     `json:"IPAddress_v6"`
-//	DNSTblRT        []string   `json:"DNSTblRT"`
-//}
-
-	
-//	wanStatusResponse, err := c.Station.GetWanStatus()
-//	if err != nil {
-//		log.With("error", err.Error()).Error("Failed to get wan status")
-//	} else if wanStatusResponse.Data != nil {
-//		ch <- prometheus.MustNewConstMetric(wanIPv4Desc, prometheus.GaugeValue, 1, wanStatusResponse.Data.WanIPv4Address)
-//		ch <- prometheus.MustNewConstMetric(wanMacDesc, prometheus.GaugeValue, 1, wanStatusResponse.Data.WanMac)
-//		ch <- prometheus.MustNewConstMetric(wanDurationDesc, prometheus.GaugeValue, 1, wanStatusResponse.Data.WanIPv4Duration)
-//		ch <- prometheus.MustNewConstMetric(wanDurationIpv6Desc, prometheus.GaugeValue, 1, wanStatusResponse.Data.WanIPv6Duration)
-//		ch <- prometheus.MustNewConstMetric(wanExpiresDesc, prometheus.GaugeValue, 1, wanStatusResponse.Data.WanExpires)
-//		ch <- prometheus.MustNewConstMetric(wanIPv4DnsDesc, prometheus.GaugeValue, 1, wanStatusResponse.Data.WanIPv4Dns)
-////		ch <- prometheus.MustNewConstMetric(wanIPv6Desc, prometheus.GaugeValue, 1, wanStatusResponse.Data.WanIPv6Address)
-//		for _, WanIPv6Address := range wanStatusResponse.Data.WanIPv6Address {
-//			ch <- prometheus.MustNewConstMetric(wanIPv6AddressDesc, prometheus.GaugeValue, 1, WanIPv6Address)
-//		}
-
-//		ch <- prometheus.MustNewConstMetric(wanDNSTblRTDesc, prometheus.GaugeValue, 1, wanStatusResponse.Data.DNSTblRT)
-//		for _, ipAddressRT := range stationStatusResponse.Data.IPAddressRT {
-//			ch <- prometheus.MustNewConstMetric(ipAddressRTDesc, prometheus.GaugeValue, 1, ipAddressRT)
-//		}
-//		ch <- prometheus.MustNewConstMetric(ipPrefixClassDesc, prometheus.GaugeValue, 1, stationStatusResponse.Data.IpPrefixClass)
-//	}
-
-
-
-//	ch <- Ipv4Desc
-//	ch <- MacDesc
-//	ch <- DurationDesc
-//	ch <- DurationIpv6Desc
-//	ch <- ExpiresDesc
-//	ch <- Ipv4DnsDesc
-//	ch <- IPAddressV6Desc
-//	ch <- DNSTblRTDesc
-//type WanStatusData struct {
-//	Ipv4	 string     `json:"ipv4"`
-//	Mac           string     `json:"mac_address"`
-//	Duration	 string     `json:"duration"`
-//	DurationIpv6  string     `json:"durationIpv6"`
-//	Expires       string     `json:"expires"`
-//	Ipv4Dns       string     `json:"ipv4_dns"`
-//	IPAddressV6  []string     `json:"IPAddress_v6"`
-//	DNSTblRT        []string   `json:"DNSTblRT"`
-//}
-
 	wanStatusResponse, err := c.Station.GetWanStatus()
 	if err != nil {
 		log.With("error", err.Error()).Error("Failed to get wan status")
@@ -484,8 +382,6 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			ch <- prometheus.MustNewConstMetric(DNSTblRTDesc, prometheus.GaugeValue, 1, DNSTblRT)
 		}
 	}
-
-
 
 	// callLog, err := c.Station.GetCallLog()
 	// if err != nil {
