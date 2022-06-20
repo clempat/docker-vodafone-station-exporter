@@ -42,10 +42,11 @@ RUN --mount=type=cache,id=gomod,sharing=locked,mode=0775,target=/go/pkg/mod \
     du -hd0 $(go env GOCACHE) && \
     go env GOMODCACHE && \
     du -hd0 $(go env GOMODCACHE) && \
-    GODEBUG=gocachehash=1 go build -v -ldflags="-s -w" && \
+    go build -v -ldflags="-s -w" && \
     du -hd0 $(go env GOCACHE) && \
     du -hd0 $(go env GOMODCACHE)
-   # go build -ldflags="-s -w"
+## # GODEBUG=gocachehash=1 go build -v -ldflags="-s -w" && \
+## # go build -ldflags="-s -w"
 
 FROM alpine:3.16
 WORKDIR /app
