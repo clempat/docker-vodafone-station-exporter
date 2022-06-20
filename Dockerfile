@@ -41,8 +41,8 @@ WORKDIR /app
 RUN apk add file scanelf elfutils patchelf
 COPY --from=builder /go/vodafone-station-exporter/vodafone-station-exporter .
 #${variable:-word}
-ENV loglevel=${loglevel-info:-} \
-    station-password=${station-password:-} \
+ENV loglevel=${loglevel:-info} \
+    station-password=${station-password} \
     station-url=${station-url:-http://192.168.0.1} \
     listen-address=${listen-address:-[::]:9420} \
     telemetry-path=${telemetry-path:-/metrics}
