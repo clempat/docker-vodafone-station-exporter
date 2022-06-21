@@ -4,21 +4,24 @@
 # https://stackoverflow.com/questions/3601515/how-to-check-if-a-variable-is-set-in-bash/16596104
 [ -z ${DEBUG+x} ] || set -vx
 
-set -eu
+set -e
 
 # USE the trap if you need to also do manual cleanup after the service is stopped,
 #     or need to start multiple services in the one container
 trap "echo TRAPed signal" HUP INT QUIT TERM
 
-### ## start service in background here
-### /usr/sbin/apachectl start
-/app/vodafone-station-exporter -log.level="$logLevel" -vodafone.station-password="$vodafoneStationPassword" -vodafone.station-url="$vodafoneStationUrl" -web.listen-address="$listenAddress" -web.telemetry-path="$metricsPath"
+# allow the container to be started with `--user`
+# FIXME # if [[ "$*" == vodafone-station-exporter* ]] && [ "$(id -u)" = '0' ]; then
+if [ "$*" = vodafone-station-exporter ] && [ "$(id -u)" = '0' ]; then
+	#### find "$GHOST_CONTENT" \! -user node -exec chown node '{}' +
+	exec su-exec sh "$BASH_SOURCE" "$@" -log.level="$logLevel" -vodafone.station-password="$vodafoneStationPassword" -vodafone.station-url="$vodafoneStationUrl" -web.listen-address="$listenAddress" -web.telemetry-path="$metricsPath"
+elif [ "$*" = vodafone-station-exporter ]; then
+	exec "$@" -log.level="$logLevel" -vodafone.station-password="$vodafoneStationPassword" -vodafone.station-url="$vodafoneStationUrl" -web.listen-address="$listenAddress" -web.telemetry-path="$metricsPath"
+fi
 
-### echo "[hit enter key to exit] or run 'docker stop <container>'"
-### read
+#if [[ "$*" == vodafone-station-exporter* ]]; then
+#else
+#  exec "$@"
+#fi
 
-### # stop service and clean up here
-### echo "stopping apache"
-### /usr/sbin/apachectl stop
-
-echo "exited $0"
+exec "$@"
