@@ -102,13 +102,12 @@ ENV logLevel=${logLevel:-debug} \
 #CMD /bin/sh -vx -c 'env && set && /app/vodafone-station-exporter -log.level=$logLevel -vodafone.station-password=$vodafoneStationPassword -vodafone.station-url=$vodafoneStationUrl -web.listen-address=$listenAddress -web.telemetry-path=$metricsPath '
 #CMD /bin/sh -vx -c '/app/vodafone-station-exporter -log.level=$logLevel -vodafone.station-password=$vodafoneStationPassword -vodafone.station-url=$vodafoneStationUrl -web.listen-address=$listenAddress -web.telemetry-path=$metricsPath '
 
-COPY --chmod=755 vodafone-station-exporter-entrypoint.sh /entrypoint.sh
-#ENTRYPOINT ["/app/vodafone-station-exporter-entrypoint.sh"]
+COPY --chmod=755 vodafone-station-exporter-entrypoint.sh /usr/local/bin/entrypoint.sh
 
 EXPOSE 9420
-USER        nobody
-ENTRYPOINT ["/entrypoint.sh"]
-#CMD /app/vodafone-station-exporter-entrypoint.sh
-
+ENV PATH="$PATH:/apt/" 
+USER nobody
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["vodafone-station-exporter-entrypoint"]
 
 
