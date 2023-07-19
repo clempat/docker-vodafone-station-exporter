@@ -63,7 +63,7 @@ ENV logLevel=${logLevel:-debug} \
 COPY --chmod=755 vodafone-station-exporter-entrypoint.sh /usr/local/bin/entrypoint.sh
 
 EXPOSE 9420
-ENV PATH="$PATH:/apt" 
+ENV PATH="$PATH:/app" 
 USER nobody
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["vodafone-station-exporter"]
